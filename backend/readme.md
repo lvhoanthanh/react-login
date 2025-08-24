@@ -86,6 +86,36 @@ Backend (API Server) ────► DB (Update score)
        All Clients update UI
 ```
 
+The following diagram illustrates the data flow between Client, Backend, and Database:
+
+```mermaid
+flowchart TB
+    %% Client
+    A["Client (Browser/App)"]
+    B["User Action"]
+    C["Display Scoreboard UI"]
+    CE["Display Error Message"]
+
+    %% Backend
+    D["Backend:<br/>  REST API /api/score/update"]
+    E{{"JWT Validation & Action<br/> Verification"}}
+    F["Update Database (Postgres)"]
+    G["Emit via Socket.IO"]
+
+    %% Database
+    H["Database: PostgreSQL"]
+    I["User Table"]
+    J["Score Table"]
+
+    %% Flow
+    A --> B --> D --> E
+    E -- Valid --> F --> H
+    H --> I
+    H --> J
+    F --> G --> C
+    E -- Invalid --> CE
+```
+
 ---
 
 ## 5. Database Design  
@@ -178,34 +208,3 @@ socket.on("scoreUpdate", (data) => {
 
 ---
 
-## 9. Data Flow Diagram
-
-The following diagram illustrates the data flow between Client, Backend, and Database:
-
-```mermaid
-flowchart TB
-    %% Client
-    A["Client (Browser/App)"]
-    B["User Action (Any action dispatches update)"]
-    C["Display Scoreboard UI"]
-    CE["Display Error Message"]
-
-    %% Backend
-    D["Backend: REST API /api/score/update"]
-    E{{"JWT Validation & Action Verification"}}
-    F["Update Database (Postgres)"]
-    G["Emit via Socket.IO"]
-
-    %% Database
-    H["Database: PostgreSQL"]
-    I["User Table"]
-    J["Score Table"]
-
-    %% Flow
-    A --> B --> D --> E
-    E -- Valid --> F --> H
-    H --> I
-    H --> J
-    F --> G --> C
-    E -- Invalid --> CE
-```
