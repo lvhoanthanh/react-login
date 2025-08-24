@@ -183,15 +183,6 @@ socket.on("scoreUpdate", (data) => {
 
 ```mermaid
 flowchart TB
-  
-    subgraph Backend["Backend Application Server"]
-        B1["REST API /api/score/update"]
-        B2["JWT Validation & Action Verification"]
-        B3["Update DB (Postgres)"]
-        B4["Publish to Redis"]
-        B5["Socket.IO Emit"]
-    end
-
     subgraph RedisCluster["Redis Pub/Sub"]
         R1["Publish Event"]
         R2["Subscribe Event"]
@@ -201,6 +192,15 @@ flowchart TB
         D1["User Table"]
         D2["Score Table"]
     end
+    subgraph Backend["Backend Application Server"]
+        B1["REST API /api/score/update"]
+        B2["JWT Validation & Action Verification"]
+        B3["Update DB (Postgres)"]
+        B4["Publish to Redis"]
+        B5["Socket.IO Emit"]
+    end
+
+  
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
