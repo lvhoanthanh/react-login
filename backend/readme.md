@@ -183,31 +183,36 @@ socket.on("scoreUpdate", (data) => {
 The following diagram illustrates the data flow between Client, Backend, and Database:
 
 ```mermaid
-flowchart TB
+fflowchart LR
 
+    %% Client
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
-        A2["Scoreboard UI"]
+        A2["POST /api/score/update"]
+        A3["Scoreboard UI"]
+        A1 --> A2 --> A3 %% ép thứ tự trong Client
     end
-    style Client fill:#2b2b2b,stroke:#888,color:#fff
 
+    %% Backend
     subgraph Backend["Backend Application Server"]
         B1["REST API /api/score/update"]
-        B2["JWT Validation & Action Verification"]
+        B2["JWT Validation & Action Ver"]
         B3["Update DB (Postgres)"]
         B4["Socket.IO Emit"]
+        B1 --> B2 --> B3 --> B4 %% ép thứ tự trong Backend
     end
-    style Backend fill:#1e3a8a,stroke:#888,color:#fff
 
+    %% Database
     subgraph DB["PostgreSQL"]
         D1["User Table"]
         D2["Score Table"]
+        D1 --> D2 %% ép thứ tự trong DB
     end
-    style DB fill:#14532d,stroke:#888,color:#fff
 
-    %% Flow
-    A1 -->|POST /api/score/update| B1
-    B1 --> B2 --> B3 --> D2
-    B3 --> B4 --> A2
+    %% Flow giữa các cột
+    A2 --> B1
+    B3 --> D2
+    B4 --> A3
+
 
 ```
