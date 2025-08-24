@@ -183,7 +183,7 @@ socket.on("scoreUpdate", (data) => {
 The following diagram illustrates the data flow between Client, Backend, and Database:
 
 ```mermaid
-flowchart LR
+flowchart TB
 
     %% Client (Cột 1 - Bên trái)
     subgraph Client["Client (Browser/App)"]
