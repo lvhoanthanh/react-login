@@ -184,7 +184,6 @@ socket.on("scoreUpdate", (data) => {
 ```mermaid
 flowchart TB
     subgraph Row1[" "]
-        direction LR
         Client["Client (Browser/App)"]
         Backend["Backend Application Server"]
         Infra["Infrastructure"]
