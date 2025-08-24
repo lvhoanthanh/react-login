@@ -185,12 +185,6 @@ The following diagram illustrates the data flow between Client, Backend, and Dat
 ```mermaid
 flowchart TB
 
-    subgraph DB["PostgreSQL"]
-        D1["User Table"]
-        D2["Score Table"]
-    end
-
-
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
@@ -201,6 +195,11 @@ flowchart TB
         B2["JWT Validation & Action Verification"]
         B3["Update DB (Postgres)"]
         B4["Socket.IO Emit"]
+    end
+
+    subgraph DB["PostgreSQL"]
+        D1["User Table"]
+        D2["Score Table"]
     end
 
     %% Flow
