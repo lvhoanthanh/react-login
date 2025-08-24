@@ -186,7 +186,7 @@ The following diagram illustrates the data flow between Client, Backend, and Dat
 flowchart TB
     %% Client
     A["Client (Browser/App)"]
-    B["User Action: POST /api/score/update"]
+    B["User Action (Any action dispatches update)"]
     C["Display Scoreboard UI"]
     CE["Display Error Message"]
 
