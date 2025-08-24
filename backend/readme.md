@@ -182,7 +182,7 @@ socket.on("scoreUpdate", (data) => {
 ## 10. Data Flow Diagram
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
