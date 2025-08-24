@@ -194,7 +194,6 @@ flowchart TB
         A2["Scoreboard UI"]
     end
     style Client fill:#2b2b2b,stroke:#888,color:#fff
-    C0 --> A1
 
     %% Cột 2: Backend
     subgraph Backend["Backend Application Server"]
@@ -204,7 +203,6 @@ flowchart TB
         B4["Socket.IO Emit"]
     end
     style Backend fill:#1e3a8a,stroke:#888,color:#fff
-    B0 --> B1
 
     %% Cột 3: Database
     subgraph DB["PostgreSQL"]
@@ -212,7 +210,6 @@ flowchart TB
         D2["Score Table"]
     end
     style DB fill:#14532d,stroke:#888,color:#fff
-    D0 --> D1
 
     %% Flow
     A1 -->|POST /api/score/update| B1
