@@ -29,8 +29,8 @@ This document specifies the requirements and architecture for a real-time score 
 ```
 
 ### FR-03: Secure Score Submission
-- Clients submit score changes via a REST API.
-- Backend validates the request, updates DB, and then broadcasts event.
+- Any user action triggers a score update.
+- Backend validates the action, updates the score in the database, and broadcasts the updated score event.
 
 **Endpoint:**
 ```sh
@@ -68,57 +68,7 @@ Body: { "userId": "12345", "actionId": "xyz-001" }
 
 ---
 
-## 4. System Architecture
-```sh
-User Action
-   │
-   ▼
-Frontend (Web)
-   │  POST /api/scores/update
-   ▼
-Backend (API Server) ────► DB (Update score)
-   │
-   ├── Validate token
-   ├── Apply score rules
-   └── Broadcast new top 10 via WebSocket
-           │
-           ▼
-       All Clients update UI
-```
-
-The following diagram illustrates the data flow between Client, Backend, and Database:
-
-```mermaid
-flowchart TB
-    %% Client
-    A["Client (Browser/App)"]
-    B["User Action"]
-    C["Display Scoreboard UI"]
-    CE["Display Error Message"]
-
-    %% Backend
-    D["Backend:<br/>  REST API /api/score/update"]
-    E{{"JWT Validation & Action<br/> Verification"}}
-    F["Update Database (Postgres)"]
-    G["Emit via Socket.IO"]
-
-    %% Database
-    H["Database: PostgreSQL"]
-    I["User Table"]
-    J["Score Table"]
-
-    %% Flow
-    A --> B --> D --> E
-    E -- Valid --> F --> H
-    H --> I
-    H --> J
-    F --> G --> C
-    E -- Invalid --> CE
-```
-
----
-
-## 5. Database Design  
+## 4. Database Design  
 
 **Table: users**  
 - id (uuid, PK)  
@@ -133,6 +83,24 @@ flowchart TB
 - created_at  
 
 ---
+
+## 5. System Architecture
+```sh
+User Action
+   │
+   ▼
+Frontend (Web)
+   │  User Action
+   ▼
+Backend (API Server) ────► DB (Update score)
+   ├── Receives action 
+   ├── Validate token
+   ├── Apply score rules
+   └── Broadcast new top 10 via WebSocket
+           │
+           ▼
+       All Clients update UI
+```
 
 ## 6. API Endpoints
 
@@ -207,4 +175,3 @@ socket.on("scoreUpdate", (data) => {
 ```
 
 ---
-
