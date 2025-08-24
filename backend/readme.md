@@ -102,6 +102,29 @@ Backend (API Server) ────► DB (Update score)
        All Clients update UI
 ```
 
+```mermaid
+
+flowchart TB
+    %% Client
+    A["Client (Browser/App)"]
+    B["User Action"]
+    C["Display Scoreboard UI"]
+    CE["Display Error Message"]
+
+    %% Backend
+    D["Backend:<br/>  Receives action"]
+    E{{"JWT Validation & Action<br/> Verification"}}
+    F["Update Database (Postgres):<br/>Calculate Score and update<br/> User Table and Action Table"]
+    G["Emit via Socket.IO"]
+
+    %% Flow
+    A --> B --> D --> E
+    E -- Valid --> F
+    F --> G --> C
+    E -- Invalid --> CE
+
+```
+
 ## 6. API Endpoints
 
 ### POST `/api/score/update`
