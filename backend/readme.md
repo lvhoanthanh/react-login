@@ -1,11 +1,11 @@
 # Project Specification: Real-time Score Tracking
 
 **Application Version:** 1.0.0  
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.1  
 **Last Updated:** 2025-08-24  
 
 ## 1. Introduction
-This document specifies the requirements and architecture for a real-time score tracking system using **Socket.IO** for real-time
+This document specifies the requirements and architecture for a real-time score tracking system using **Socket.IO** for real-time communication.
 
 ---
 
@@ -17,7 +17,7 @@ This document specifies the requirements and architecture for a real-time score 
 
 ### FR-02: Real-time Score Update
 - Users’ scores must update in real time across all connected clients.
-- Updates must be distributed through **Redis channels** so that multiple backend instances stay in sync.
+- Updates are broadcast directly via **Socket.IO**.
 
 **Example Event:**
 ```json
@@ -43,8 +43,7 @@ Body: { "userId": "12345", "actionId": "xyz-001" }
 1. Validate JWT token.
 2. Verify `actionId` is unique (to prevent replay attacks).
 3. Update user’s score in DB.
-4. Publish update event to Redis channel.
-5. Backend instances listen and emit event via Socket.IO or web socket.
+4. Emit event via Socket.IO to all connected clients.
 ```
 
 **Response:**
@@ -63,7 +62,7 @@ Body: { "userId": "12345", "actionId": "xyz-001" }
 ---
 
 ## 3. Non-functional Requirements
-- **Scalability**: Redis Pub/Sub ensures multiple backend servers remain in sync.
+- **Scalability**: Backend handles real-time updates.
 - **Low Latency**: Socket.IO provides <200ms propagation.
 - **Security**: JWT validation required for all actions.
 
@@ -85,7 +84,6 @@ Backend (API Server) ────► DB (Update score)
            │
            ▼
        All Clients update UI
-
 ```
 
 ---
@@ -179,28 +177,26 @@ socket.on("scoreUpdate", (data) => {
 ```
 
 ---
-## 10. Data Flow Diagram
+
+## 9. Data Flow Diagram
+
+The following diagram illustrates the data flow between Client, Backend, and Database:
 
 ```mermaid
 flowchart TB
-    subgraph RedisCluster["Redis Pub/Sub"]
-        R1["Publish Event"]
-        R2["Subscribe Event"]
+  
+    subgraph Backend["Backend Application Server"]
+        B1["REST API /api/score/update"]
+        B2["JWT Validation & Action Verification"]
+        B3["Update DB (Postgres)"]
+        B4["Socket.IO Emit"]
     end
 
     subgraph DB["PostgreSQL"]
         D1["User Table"]
         D2["Score Table"]
     end
-    subgraph Backend["Backend Application Server"]
-        B1["REST API /api/score/update"]
-        B2["JWT Validation & Action Verification"]
-        B3["Update DB (Postgres)"]
-        B4["Publish to Redis"]
-        B5["Socket.IO Emit"]
-    end
 
-  
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
@@ -209,8 +205,5 @@ flowchart TB
     %% Flow
     A1 -->|POST /api/score/update| B1
     B1 --> B2 --> B3 --> D2
-    B3 --> B4 --> R1 --> R2 --> B5
-    B5 --> A2
-
-    %% Sync multiple backend instances
-    R2 -->|broadcast| Backend
+    B3 --> B4 --> A2
+```
