@@ -179,12 +179,12 @@ socket.on("scoreUpdate", (data) => {
 ```
 
 ---
-## 9. Data Flow Diagram
+## 10. Data Flow Diagram
 
 The following diagram illustrates the data flow between Client, Backend, Redis, and Database:
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
@@ -216,5 +216,3 @@ flowchart LR
 
     %% Sync multiple backend instances
     R2 -->|broadcast| Backend
-
-```
