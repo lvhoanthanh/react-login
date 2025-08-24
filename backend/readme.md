@@ -185,17 +185,12 @@ The following diagram illustrates the data flow between Client, Backend, and Dat
 ```mermaid
 flowchart TB
 
-    %% Dummy để giữ layout 3 cột
-    C0[ ] -.-> B0[ ] -.-> D0[ ]
-
-    %% Cột 1: Client
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
     end
     style Client fill:#2b2b2b,stroke:#888,color:#fff
 
-    %% Cột 2: Backend
     subgraph Backend["Backend Application Server"]
         B1["REST API /api/score/update"]
         B2["JWT Validation & Action Verification"]
@@ -204,7 +199,6 @@ flowchart TB
     end
     style Backend fill:#1e3a8a,stroke:#888,color:#fff
 
-    %% Cột 3: Database
     subgraph DB["PostgreSQL"]
         D1["User Table"]
         D2["Score Table"]
