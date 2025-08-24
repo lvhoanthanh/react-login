@@ -183,41 +183,34 @@ socket.on("scoreUpdate", (data) => {
 
 ```mermaid
 flowchart TB
-    subgraph Row1[" "]
-        Client["Client (Browser/App)"]
-        Backend["Backend Application Server"]
-        Infra["Infrastructure"]
+  
+    subgraph Backend["Backend Application Server"]
+        B1["REST API /api/score/update"]
+        B2["JWT Validation & Action Verification"]
+        B3["Update DB (Postgres)"]
+        B4["Publish to Redis"]
+        B5["Socket.IO Emit"]
     end
 
+    subgraph RedisCluster["Redis Pub/Sub"]
+        R1["Publish Event"]
+        R2["Subscribe Event"]
+    end
+
+    subgraph DB["PostgreSQL"]
+        D1["User Table"]
+        D2["Score Table"]
+    end
     subgraph Client["Client (Browser/App)"]
         A1["User Action"]
         A2["Scoreboard UI"]
     end
 
-    subgraph Backend["Backend Application Server"]
-        B1["REST API /api/score/update"]
-        B2["JWT Validation & Action Verification"]
-        B3["Update DB"]
-        B4["Publish to Redis"]
-        B5["Socket.IO Emit"]
-    end
-
-    subgraph Infra["Infrastructure"]
-        subgraph DB["PostgreSQL"]
-            D1["User Table"]
-            D2["Score Table"]
-        end
-
-        subgraph RedisCluster["Redis Pub/Sub"]
-            R1["Publish Event"]
-            R2["Subscribe Event"]
-        end
-    end
-
-    %% Flow connections
+    %% Flow
     A1 -->|POST /api/score/update| B1
     B1 --> B2 --> B3 --> D2
     B3 --> B4 --> R1 --> R2 --> B5
     B5 --> A2
 
+    %% Sync multiple backend instances
     R2 -->|broadcast| Backend
