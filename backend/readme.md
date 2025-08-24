@@ -184,14 +184,10 @@ socket.on("scoreUpdate", (data) => {
 ```mermaid
 flowchart TB
    
-subgraph DB["PostgreSQL"]
-        D1["User Table"]
-        D2["Score Table"]
-    end
 
-    subgraph RedisCluster["Redis Pub/Sub"]
-        R1["Publish Event"]
-        R2["Subscribe Event"]
+     subgraph Client["Client (Browser/App)"]
+        A1["User Action"]
+        A2["Scoreboard UI"]
     end
 
     subgraph Backend["Backend Application Server"]
@@ -202,9 +198,14 @@ subgraph DB["PostgreSQL"]
         B5["Socket.IO Emit"]
     end
 
-     subgraph Client["Client (Browser/App)"]
-        A1["User Action"]
-        A2["Scoreboard UI"]
+subgraph DB["PostgreSQL"]
+        D1["User Table"]
+        D2["Score Table"]
+    end
+
+    subgraph RedisCluster["Redis Pub/Sub"]
+        R1["Publish Event"]
+        R2["Subscribe Event"]
     end
 
     %% Flow
